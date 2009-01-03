@@ -9,7 +9,9 @@ require 'stringio'
 RAILS_ROOT = File.dirname(__FILE__)
 RAILS_ENV = ""
 
-$: << "../lib"
+#$: << "../lib"
+#	the above doesn't work for me (jake)
+$:.unshift "#{File.dirname(__FILE__)}/../lib"
 
 require 'file_column'
 require 'file_compat'
@@ -33,6 +35,7 @@ class RequestMock
   def initialize
     @relative_url_root = ""
   end
+
 end
 
 class Test::Unit::TestCase
@@ -49,10 +52,14 @@ class Test::Unit::TestCase
   end
 
   def clear_validations
-    [:validate, :validate_on_create, :validate_on_update].each do |attr|
-        Entry.write_inheritable_attribute attr, []
-        Movie.write_inheritable_attribute attr, []
-      end
+# These don't appear to work as expected in Rails 2.2.2
+#	Replaced call with Entry.validate.clear and Movie.validate.clear
+#    [:validate, :validate_on_create, :validate_on_update].each do |attr|
+#        Entry.write_inheritable_attribute attr, []
+#        Movie.write_inheritable_attribute attr, []
+#      end
+		Entry.validate.clear
+		Movie.validate.clear
   end
 
   def file_path(filename)

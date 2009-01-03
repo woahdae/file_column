@@ -2,6 +2,8 @@ require File.dirname(__FILE__) + '/abstract_unit'
 require 'RMagick'
 require File.dirname(__FILE__) + '/fixtures/entry'
 
+#	this seems to be required now (jake)
+require File.dirname(__FILE__) + '/../lib/file_column_helper'
 
 class AbstractRMagickTest < Test::Unit::TestCase
   def teardown

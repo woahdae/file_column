@@ -1,5 +1,9 @@
-require File.dirname(__FILE__) + '/abstract_unit'
 
+#	Set isn't included be default anymore ?
+require 'set'
+
+require File.dirname(__FILE__) + '/abstract_unit'
+require File.dirname(__FILE__) + '/../lib/test_case'
 require File.dirname(__FILE__) + '/fixtures/entry'
 
 class Movie < ActiveRecord::Base
@@ -128,10 +132,14 @@ class FileColumnTest < Test::Unit::TestCase
       file = FileColumn::TempUploadedFile.new(e, "image")
       file.instance_variable_set :@dir, File.dirname(file_path("kerb.jpg"))
       file.instance_variable_set :@filename, File.basename(file_path("kerb.jpg"))
-      
       assert_equal "image/jpeg", file.get_content_type
     else
-      puts "Warning: Skipping test_get_content_type_with_file test as '#{options[:file_exec]}' does not exist"
+#
+#	'options' doesn't exist!
+#
+#      puts "Warning: Skipping test_get_content_type_with_file test as '#{options[:file_exec]}' does not exist"
+			puts
+      puts "Warning: Skipping test_get_content_type_with_file test as '#{FILE_UTILITY}' does not exist"
     end
   end
 
@@ -142,10 +150,14 @@ class FileColumnTest < Test::Unit::TestCase
     # has the file utility installed
     if File.executable?(FILE_UTILITY)
       e = Entry.new(:image => uploaded_file(file_path("skanthak.png"), "", "skanthak.jpg"))
-      
       assert_equal "skanthak.png", File.basename(e.image)
     else
-      puts "Warning: Skipping test_fix_extension_with_file test as '#{options[:file_exec]}' does not exist"
+#
+#	'options' doesn't exist!
+#
+#      puts "Warning: Skipping test_fix_extension_with_file test as '#{options[:file_exec]}' does not exist"
+			puts
+      puts "Warning: Skipping test_fix_extension_with_file test as '#{FILE_UTILITY}' does not exist"
     end
   end
 
@@ -201,7 +213,7 @@ class FileColumnTest < Test::Unit::TestCase
     e.image = uploaded_file(file_path("kerb.jpg"), "image/jpeg", "kerb.jpg")    
     assert e.save
     
-    assert_equal_paths File.join(RAILS_ROOT, "public", "my_store_dir", e.id), e.image_dir   
+    assert_equal_paths File.join(RAILS_ROOT, "public", "my_store_dir", e.id.to_s), e.image_dir   
   end
 
   def test_tmp_dir_with_store_dir_callback
@@ -415,7 +427,9 @@ class FileColumnTest < Test::Unit::TestCase
   
   def test_empty_filename
     e = Entry.new
-    assert_equal "", e["file"]
+#    assert_equal "", e["file"]
+#	Why would it be ""?  The default for this is NOT set in the schema!
+    assert_nil e["file"]
     assert_nil e.file
     assert_nil e["image"]
     assert_nil e.image

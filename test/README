@@ -1,0 +1,24 @@
+
+Recent updates require Rails 2.2.2 and RMagick for testing to function.
+
+Running ...
+
+> rake test:plugins PLUGIN=file_column
+
+... ONLY runs file_column_test.rb
+
+Running ...
+
+> cd vendor/plugins/file_column/ ; rake
+
+... will run 
+
+  sh "cd test; ruby file_column_test.rb"
+  sh "cd test; ruby file_column_helper_test.rb"
+  sh "cd test; ruby magick_test.rb"
+  sh "cd test; ruby magick_view_only_test.rb"
+
+This should be rectified.
+
+Also, the Rakefile should be updated to the newer style.
+

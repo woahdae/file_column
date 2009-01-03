@@ -243,6 +243,16 @@ module FileColumn # :nodoc:
         local_file_path = new_local_file_path
       end
       
+      # Added by SM
+      # See http://www.railsweenie.com/forums/1/topics/324
+      if options[:magick] && options[:magick][:format]
+        format = options[:magick][:format].downcase
+        @filename = @filename.gsub(/#{File.extname(@filename)}$/, ".#{format}")
+        new_local_file_path = File.join(tmp_base_dir,@tmp_dir,@filename)
+        File.rename(local_file_path, new_local_file_path) unless new_local_file_path == local_file_path
+        local_file_path = new_local_file_path
+      end      
+      
       @instance[@attr] = @filename
       @just_uploaded = true
     end
@@ -304,11 +314,11 @@ module FileColumn # :nodoc:
 
     def after_save
       super
-
+     
       # we have a newly uploaded image, move it to the correct location
       file = clone_as PermanentUploadedFile
       file.move_from(File.join(tmp_base_dir, @tmp_dir), @just_uploaded)
-
+      
       # delete temporary files
       delete_files
 
@@ -323,7 +333,8 @@ module FileColumn # :nodoc:
     def get_content_type(fallback=nil)
       if options[:file_exec]
         begin
-          content_type = `#{options[:file_exec]} -bi "#{File.join(@dir,@filename)}"`.chomp
+          content_type = `#{options[:file_exec]} -bI "#{File.join(@dir,@filename)}"`.chomp
+#          content_type = `#{options[:file_exec]} -bi "#{File.join(@dir,@filename)}"`.chomp
           content_type = fallback unless $?.success?
           content_type.gsub!(/;.+$/,"") if content_type
           content_type
@@ -349,7 +360,7 @@ module FileColumn # :nodoc:
       @dir = File.join(store_dir, relative_path_prefix)
       @filename = @instance[@attr]
       @filename = nil if @filename.empty?
-			FileUtils.mkpath(File.dirname(@dir)) unless File.exists?(File.dirname(@dir))
+      FileUtils.mkpath(File.dirname(@dir))
     end
 
     def move_from(local_dir, just_uploaded)
@@ -397,7 +408,7 @@ module FileColumn # :nodoc:
     
     def relative_path_prefix
       raise RuntimeError.new("Trying to access file_column, but primary key got lost.") if @instance.id.to_s.empty?
-      File.join(*("%08d" % @instance.id).scan(/..../))
+      @instance.id.to_s
     end
   end
     
@@ -601,7 +612,7 @@ module FileColumn # :nodoc:
       :fix_file_extensions => true,
       :permissions => 0644,
 
-      # path to the unix "file" executbale for
+      # path to the unix "file" executable for
       # guessing the content-type of files
       :file_exec => "file" 
     }

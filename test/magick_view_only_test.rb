@@ -1,6 +1,9 @@
 require File.dirname(__FILE__) + '/abstract_unit'
 require File.dirname(__FILE__) + '/fixtures/entry'
 
+#	this seems to be required now (jake)
+require File.dirname(__FILE__) + '/../lib/file_column_helper'
+
 class RMagickViewOnlyTest < Test::Unit::TestCase
   include FileColumnHelper
 
