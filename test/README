@@ -21,3 +21,6 @@ This should be rectified.
 
 Also, the Rakefile should be updated to the newer style.
 
+Might also benefit by using sqlite database for testing too.
+
+
