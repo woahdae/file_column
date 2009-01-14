@@ -705,6 +705,14 @@ module FileColumn # :nodoc:
         my_options
       end
 
+      define_method "#{attr}_base_url" do
+        if my_options[:base_url].is_a?(Symbol)
+          self.send(my_options[:base_url])
+        else
+          my_options[:base_url]
+        end
+      end
+
       private after_save_method, after_destroy_method
 
       FileColumn::MagickExtension::file_column(self, attr, my_options) if options[:magick]

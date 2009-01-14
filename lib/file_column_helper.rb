@@ -1,3 +1,4 @@
+require 'ruby-debug'
 # This module contains helper methods for displaying and uploading files
 # for attributes created by +FileColumn+'s +file_column+ method. It will be
 # automatically included into ActionView::Base, thereby making this module's
@@ -78,7 +79,7 @@ module FileColumnHelper
     url = ""
     url << request.relative_url_root.to_s if absolute
     url << "/"
-    url << object.send("#{method}_options")[:base_url] << "/"
+    url << object.send("#{method}_base_url") << "/"
     url << relative_path
   end
 
