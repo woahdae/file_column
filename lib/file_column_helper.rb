@@ -76,8 +76,10 @@ module FileColumnHelper
     relative_path = object.send("#{method}_relative_path", subdir)
     return nil unless relative_path
 
-    url = ""
-    url << request.relative_url_root.to_s if absolute
+    root = object.send("remote_#{method}_base_url") if object.respond_to?("remote_#{method}_base_url")
+    root ||= request.relative_url_root.to_s if absolute
+    
+    url = root || ""
     url << "/"
     url << object.send("#{method}_base_url") << "/"
     url << relative_path
